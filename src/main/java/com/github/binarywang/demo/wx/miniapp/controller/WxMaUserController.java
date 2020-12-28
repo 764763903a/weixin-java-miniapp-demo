@@ -42,6 +42,16 @@ public class WxMaUserController {
             this.logger.info(session.getSessionKey());
             this.logger.info(session.getOpenid());
             //TODO 可以增加自己的逻辑，关联业务相关数据
+
+            //判断是不是新用户
+
+
+            //新用户进行注册
+
+
+            //老用户进行登录
+
+
             return JsonUtils.toJson(session);
         } catch (WxErrorException e) {
             this.logger.error(e.getMessage(), e);

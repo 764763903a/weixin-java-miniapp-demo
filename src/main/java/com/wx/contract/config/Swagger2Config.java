@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.miniapp.config;
+package com.wx.contract.config;
 
 
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.miniapp.controller;
+package com.wx.contract.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import com.wx.contract.config.WxMaConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
-import com.github.binarywang.demo.wx.miniapp.config.WxMaConfiguration;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;

@@ -1,11 +1,10 @@
-package com.github.binarywang.demo.wx.miniapp.config;
+package com.wx.contract.config;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.bean.WxMaKefuMessage;
 import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
-import cn.binarywang.wx.miniapp.config.impl.WxMaRedisConfigImpl;
 import cn.binarywang.wx.miniapp.message.WxMaMessageHandler;
 import cn.binarywang.wx.miniapp.message.WxMaMessageRouter;
 import com.google.common.collect.Lists;
@@ -17,7 +16,6 @@ import me.chanjar.weixin.common.error.WxRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import redis.clients.jedis.JedisPool;
 
 import javax.annotation.PostConstruct;
 import java.io.File;

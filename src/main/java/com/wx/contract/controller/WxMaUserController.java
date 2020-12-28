@@ -1,6 +1,5 @@
-package com.github.binarywang.demo.wx.miniapp.controller;
+package com.wx.contract.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
@@ -14,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
-import org.attoparser.trace.MarkupTraceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +22,8 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
-import com.github.binarywang.demo.wx.miniapp.config.WxMaConfiguration;
-import com.github.binarywang.demo.wx.miniapp.utils.JsonUtils;
+import com.wx.contract.config.WxMaConfiguration;
+import com.wx.contract.utils.JsonUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 
 /**
@@ -63,6 +61,7 @@ public class WxMaUserController {
             //TODO 可以增加自己的逻辑，关联业务相关数据
 
             //判断是不是新用户
+
 
             //新用户进行注册
 

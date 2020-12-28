@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.miniapp.config;
+package com.wx.contract.config;
 
 import java.util.List;
 

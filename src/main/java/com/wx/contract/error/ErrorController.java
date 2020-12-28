@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.miniapp.error;
+package com.wx.contract.error;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

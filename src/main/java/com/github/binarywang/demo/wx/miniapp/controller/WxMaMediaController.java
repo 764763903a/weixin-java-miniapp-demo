@@ -69,7 +69,6 @@ public class WxMaMediaController {
                 this.logger.error(e.getMessage(), e);
             }
         }
-
         return result;
     }
 

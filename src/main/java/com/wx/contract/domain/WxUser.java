@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value = "com-wx-contract-domain-WxUser")
+@ApiModel(value="com-wx-contract-domain-WxUser")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,112 +22,112 @@ public class WxUser implements Serializable {
      * 用户主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "用户主键")
+    @ApiModelProperty(value="用户主键")
     private Integer id;
 
     /**
      * 微信主键
      */
     @TableField(value = "open_id")
-    @ApiModelProperty(value = "微信主键")
+    @ApiModelProperty(value="微信主键")
     private String openId;
 
     /**
      * 姓名
      */
     @TableField(value = "nickname")
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value="姓名")
     private String nickname;
 
     /**
      * 个性签名
      */
     @TableField(value = "motto")
-    @ApiModelProperty(value = "个性签名")
+    @ApiModelProperty(value="个性签名")
     private String motto;
 
     /**
      * 认证姓名
      */
     @TableField(value = "student_name")
-    @ApiModelProperty(value = "认证姓名")
+    @ApiModelProperty(value="认证姓名")
     private String studentName;
 
     /**
      * 学生院系
      */
     @TableField(value = "faculty")
-    @ApiModelProperty(value = "学生院系")
+    @ApiModelProperty(value="学生院系")
     private String faculty;
 
     /**
      * 学生班级
      */
     @TableField(value = "class_name")
-    @ApiModelProperty(value = "学生班级")
+    @ApiModelProperty(value="学生班级")
     private String className;
 
     /**
      * 学生号
      */
     @TableField(value = "student_id")
-    @ApiModelProperty(value = "学生号")
+    @ApiModelProperty(value="学生号")
     private String studentId;
 
     /**
      * 姓名
      */
     @TableField(value = "sex")
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value="姓名")
     private Byte sex;
 
     /**
      * 个人爱好
      */
     @TableField(value = "love")
-    @ApiModelProperty(value = "个人爱好")
+    @ApiModelProperty(value="个人爱好")
     private String love;
 
     /**
      * 生日
      */
     @TableField(value = "born")
-    @ApiModelProperty(value = "生日")
+    @ApiModelProperty(value="生日")
     private Date born;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value="创建时间")
     private Date createTime;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value="更新时间")
     private Date updateTime;
 
     /**
      * 最后上线时间
      */
     @TableField(value = "last_time")
-    @ApiModelProperty(value = "最后上线时间")
+    @ApiModelProperty(value="最后上线时间")
     private Date lastTime;
 
     /**
      * 微信注册城市
      */
     @TableField(value = "city")
-    @ApiModelProperty(value = "微信注册城市")
+    @ApiModelProperty(value="微信注册城市")
     private String city;
 
     /**
      * 头像
      */
     @TableField(value = "avatarUrl")
-    @ApiModelProperty(value = "头像")
+    @ApiModelProperty(value="头像")
     private String avatarurl;
 
     private static final long serialVersionUID = 1L;

@@ -130,6 +130,13 @@ public class WxUser implements Serializable {
     @ApiModelProperty(value="头像")
     private String avatarurl;
 
+    public void setUser(String name, String faculty, String className, String classNum){
+        this.studentName = name;
+        this.faculty = faculty;
+        this.className = className;
+        this.studentId = classNum;
+    }
+
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";

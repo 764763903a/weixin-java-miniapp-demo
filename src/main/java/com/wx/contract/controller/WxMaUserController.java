@@ -9,8 +9,11 @@ import com.tencentcloudapi.ocr.v20181119.OcrClient;
 import com.tencentcloudapi.ocr.v20181119.models.GeneralAccurateOCRRequest;
 import com.tencentcloudapi.ocr.v20181119.models.GeneralAccurateOCRResponse;
 import com.tencentcloudapi.ocr.v20181119.models.TextDetection;
+import com.wx.contract.domain.ListMyFousResult;
 import com.wx.contract.domain.Result;
+import com.wx.contract.domain.WxFan;
 import com.wx.contract.domain.WxUser;
+import com.wx.contract.service.WxFanService;
 import com.wx.contract.service.WxUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
@@ -30,6 +34,7 @@ import com.wx.contract.utils.JsonUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 微信小程序用户接口
@@ -51,12 +56,15 @@ public class WxMaUserController {
     @Resource
     private WxUserService wxUserService;
 
+    @Resource
+    private WxFanService wxFanService;
+
     /**
      * 登陆接口
      */
     @ApiOperation("用户登录")
     @GetMapping("/login")
-    public Result login(@PathVariable @ApiParam(name="appid",value="小程序appid",required=true) String appid,
+    public Result<Object> login(@PathVariable @ApiParam(name="appid",value="小程序appid",required=true) String appid,
                         @ApiParam(name="code",value="微信提供的code",required=true) String code) {
         if (StringUtils.isBlank(code)) {
             return Result.succeed("empty jscode");
@@ -106,7 +114,6 @@ public class WxMaUserController {
 
         // 解密用户信息
         WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
-
         return JsonUtils.toJson(userInfo);
     }
 
@@ -140,11 +147,12 @@ public class WxMaUserController {
 
     @PostMapping("/auth")
     @ApiOperation("对学生信息进行认证")
-    public Result authenticate(@PathVariable @ApiParam(name="name",value="学生姓名",required=true)String name ,
+    public Result<Object> authenticate(@PathVariable @ApiParam(name="name",value="学生姓名",required=true)String name ,
                           @ApiParam(name="faculty",value="学生院系",required=true) String faculty,
                           @ApiParam(name="className",value="学校班级",required=true) String className ,
                           @ApiParam(name="classNum",value="学号",required=true) String classNum,
-                          @ApiParam(name="imgUrl",value="图片连接",required=true) String imgUrl){
+                          @ApiParam(name="imgUrl",value="图片连接",required=true) String imgUrl,
+                          @ApiParam(name="openId",value="用户唯一编号",required=true) String openId){
 
         try{
             Credential cred = new Credential(sectetId, sectetKey);
@@ -179,15 +187,56 @@ public class WxMaUserController {
             //逻辑校验
             String s = str.toString();
             if (s.contains(name)&&s.contains(faculty)&&s.contains(className)&&s.contains(classNum)){
+                //校验成功后将数据存入数据库中 做了重复校验的判断
+                WxUser one = wxUserService.getOne(new LambdaQueryWrapper<WxUser>().eq(WxUser::getOpenId, openId));
+                one.setUser(name,faculty,className,classNum);
+                wxUserService.updateById(one);
                 return Result.succeed("校验成功");
             }else {
-                return Result.failed("校验失败,请重新上传");
+                return Result.failed("校验失败,请重新上传后校验");
             }
+        }catch(DuplicateKeyException de){
+            return Result.failed("该学生已被绑定，如有问题，请联系客服解绑");
         } catch (TencentCloudSDKException e) {
             logger.error(e.toString());
             return Result.failed("校验失败");
         }
-
     }
+
+    @GetMapping("/userInfo")
+    @ApiOperation("获取学生个人信息")
+    public Result<WxUser> getUserInfo(@PathVariable @ApiParam(name="openId",value="用户唯一编号",required=true) String openId){
+        return Result.succeed(wxUserService.getOne(new LambdaQueryWrapper<WxUser>().eq(WxUser::getOpenId,openId)));
+    }
+
+    @PostMapping("/register")
+    @ApiOperation("注册学生账号或编辑学生信息")
+    public Result<Boolean> register(@RequestBody @ApiParam(name="wxFan",value="关注对象",required=true) WxUser wxUser){
+        return Result.succeed(wxUserService.saveOrUpdate(wxUser));
+    }
+
+    @PostMapping("/attention")
+    @ApiOperation("关注")
+    public Result<Boolean> attention(@RequestBody @ApiParam(name="wxFan",value="关注对象",required=true) WxFan wxFan){
+        return Result.succeed(wxFanService.save(wxFan));
+    }
+
+    @PostMapping("/cancleAttention")
+    @ApiOperation("取消关注")
+    public Result<Boolean> cancleAttention(@RequestBody @ApiParam(name="wxUser",value="学生对象",required=true) WxFan wxFan){
+        return Result.succeed(wxFanService.remove(new LambdaQueryWrapper<WxFan>()
+            .eq(WxFan::getOpenId,wxFan.getOpenId()).eq(WxFan::getBOpenId,wxFan.getBOpenId())));
+    }
+
+    @GetMapping("/listMyFocus")
+    @ApiOperation("我关注的人")
+    public Result<List<ListMyFousResult>> myFocus(String openId){
+        List<ListMyFousResult> listMyFousResults = wxFanService.ListMyFous(openId);
+        return Result.succeed(listMyFousResults);
+    }
+
+
+
+
 
 }

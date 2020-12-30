@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wx.contract.mapper.WxFanMapper">
+    <resultMap id="ListMyFansResultMap" type="com.wx.contract.domain.ListMyFansResult">
+        <result column="id" property="id"/>
+        <result column="open_id" property="openId"/>
+        <result column="avatarUrl" property="avatarUrl"/>
+        <result column="nickname" property="nickname"/>
+        <result column="sex" property="sex"/>
+        <result column="motto" property="motto"/>
+    </resultMap>
+    <resultMap id="ListMyFousResultMap" type="com.wx.contract.domain.ListMyFousResult">
+        <result column="id" property="id"/>
+        <result column="b_open_id" property="b_open_id"/>
+        <result column="avatarUrl" property="avatarUrl"/>
+        <result column="nickname" property="nickname"/>
+        <result column="sex" property="sex"/>
+        <result column="motto" property="motto"/>
+    </resultMap>
+    <resultMap id="BaseResultMap" type="com.wx.contract.domain.WxFan">
+    <!--@mbg.generated-->
+    <!--@Table wx_fan-->
+    <id column="id" property="id" />
+    <result column="open_id" property="openId" />
+    <result column="b_open_id" property="bOpenId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, open_id, b_open_id
+  </sql>
+
+    <select id="ListMyFous" resultMap="ListMyFousResultMap">
+        SELECT
+            wx_fan.id,
+            wx_fan.b_open_id,
+            wx_user.avatarUrl,
+            wx_user.nickname,
+            wx_user.sex,
+            wx_user.motto
+        FROM
+            wx_fan
+                INNER JOIN wx_user ON wx_fan.b_open_id = wx_user.open_id
+        WHERE wx_fan.open_id = #{openid}
+    </select>
+
+    <select id="ListMyFans" resultMap="ListMyFansResultMap">
+        SELECT
+            wx_fan.id,
+            wx_fan.open_id,
+            wx_user.avatarUrl,
+            wx_user.nickname,
+            wx_user.sex,
+            wx_user.motto
+        FROM
+            wx_fan
+                INNER JOIN wx_user ON wx_fan.open_id = wx_user.open_id
+        WHERE wx_fan.b_open_id = #{openid}
+    </select>
+</mapper>

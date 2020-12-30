@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wx.contract.mapper.WxUserMapper;
 import com.wx.contract.domain.WxUser;
 import com.wx.contract.service.WxUserService;
+
 @Service
-public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> implements WxUserService{
+public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> implements WxUserService {
 
 }
+

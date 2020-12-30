@@ -18,10 +18,12 @@
     <result column="create_time" property="createTime" />
     <result column="update_time" property="updateTime" />
     <result column="last_time" property="lastTime" />
+    <result column="city" property="city" />
+    <result column="avatarUrl" property="avatarurl" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, open_id, nickname, motto, student_name, faculty, class_name, student_id, sex, 
-    love, born, create_time, update_time, last_time
+    love, born, create_time, update_time, last_time, city, avatarUrl
   </sql>
 </mapper>

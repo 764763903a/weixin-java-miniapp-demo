@@ -1,5 +1,6 @@
 package com.wx.contract.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
@@ -9,12 +10,16 @@ import com.tencentcloudapi.ocr.v20181119.OcrClient;
 import com.tencentcloudapi.ocr.v20181119.models.GeneralAccurateOCRRequest;
 import com.tencentcloudapi.ocr.v20181119.models.GeneralAccurateOCRResponse;
 import com.tencentcloudapi.ocr.v20181119.models.TextDetection;
+import com.wx.contract.domain.Result;
+import com.wx.contract.domain.WxUser;
+import com.wx.contract.service.WxUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +30,8 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.wx.contract.config.WxMaConfiguration;
 import com.wx.contract.utils.JsonUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
+
+import javax.annotation.Resource;
 
 /**
  * 微信小程序用户接口
@@ -43,13 +50,18 @@ public class WxMaUserController {
     @Value("${orc.secretKey}")
     private String sectetKey;
 
+    @Autowired
+    private WxUserService wxUserService;
+
     /**
      * 登陆接口
      */
+    @ApiOperation("用户登录")
     @GetMapping("/login")
-    public String login(@PathVariable String appid, String code) {
+    public Result login(@PathVariable @ApiParam(name="appid",value="小程序appid",required=true) String appid,
+                        @ApiParam(name="code",value="微信提供的code",required=true) String code) {
         if (StringUtils.isBlank(code)) {
-            return "empty jscode";
+            return Result.succeed("empty jscode");
         }
 
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
@@ -61,18 +73,15 @@ public class WxMaUserController {
             //TODO 可以增加自己的逻辑，关联业务相关数据
 
             //判断是不是新用户
-
-
-            //新用户进行注册
-
-
-            //老用户进行登录
-
-
-            return JsonUtils.toJson(session);
+            WxUser one = wxUserService.getOne(new LambdaQueryWrapper<WxUser>().eq(WxUser::getOpenId, session.getOpenid()));
+            if (one!=null){
+                return Result.newuser("欢迎新用户注册。");
+            }else{
+                return Result.succeed(JsonUtils.toJson(session),"登录成功");
+            }
         } catch (WxErrorException e) {
             this.logger.error(e.getMessage(), e);
-            return e.toString();
+            return Result.failed("登录失败"+e.toString());
         }
     }
 
@@ -81,9 +90,15 @@ public class WxMaUserController {
      * 获取用户信息接口
      * </pre>
      */
+    @ApiOperation("获取微信用户信息")
     @GetMapping("/info")
-    public String info(@PathVariable String appid, String sessionKey,
-                       String signature, String rawData, String encryptedData, String iv) {
+    public String info(@PathVariable
+                           @ApiParam(name="appid",value="小程序appid",required=true)    String appid,
+                       @ApiParam(name="sessionKey",value="会话密钥",required=true) String sessionKey,
+                       @ApiParam(name="signature",value="用于校验用户信息",required=true) String signature,
+                       @ApiParam(name="rawData",value="不包括敏感信息的原始数据字符串，用于计算签名",required=true) String rawData,
+                       @ApiParam(name="encryptedData",value="包括敏感数据在内的完整用户信息的加密数据",required=true) String encryptedData,
+                       @ApiParam(name="iv",value="加密算法的初始向量",required=true) String iv) {
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
 
         // 用户信息校验
@@ -102,6 +117,7 @@ public class WxMaUserController {
      * 获取用户绑定手机号信息
      * </pre>
      */
+    @ApiOperation("获取用户绑定手机号信息（个人用户不一定能用）")
     @GetMapping("/phone")
     public String phone(@PathVariable String appid, String sessionKey, String signature,
                         String rawData, String encryptedData, String iv) {
@@ -126,7 +142,7 @@ public class WxMaUserController {
 
     @PostMapping("/auth")
     @ApiOperation("对学生信息进行认证")
-    public R authenticate(@PathVariable @ApiParam(name="name",value="学生姓名",required=true)String name ,
+    public Result authenticate(@PathVariable @ApiParam(name="name",value="学生姓名",required=true)String name ,
                           @ApiParam(name="faculty",value="学生院系",required=true) String faculty,
                           @ApiParam(name="className",value="学校班级",required=true) String className ,
                           @ApiParam(name="classNum",value="学号",required=true) String classNum,
@@ -165,15 +181,15 @@ public class WxMaUserController {
             //逻辑校验
             String s = str.toString();
             if (s.contains(name)&&s.contains(faculty)&&s.contains(className)&&s.contains(classNum)){
-                return R.ok("校验成功");
+                return Result.succeed("校验成功");
             }else {
-                return R.failed("校验失败,请重新上传");
+                return Result.failed("校验失败,请重新上传");
             }
         } catch (TencentCloudSDKException e) {
-            System.out.println(e.toString());
+            logger.error(e.toString());
+            return Result.failed("校验失败");
         }
 
-        return null;
     }
 
 }
